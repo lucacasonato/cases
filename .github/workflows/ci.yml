@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Deno
+        uses: denoland/setup-deno@v1
+
+      - name: Format
+        run: deno fmt
+
+      - name: Lint
+        run: deno lint
+
+      - name: Test
+        run: deno test
+
+      - name: Publish
+        if: startsWith(github.ref, 'refs/tags/')
+        run: deno publish
